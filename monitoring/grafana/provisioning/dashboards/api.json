@@ -1,0 +1,28 @@
+{
+  "_comment_what":  "TICKET-I080 + I081 — API metrics dashboard",
+  "_comment_how":   "Build this in the Grafana UI, then click 'Share' -> 'Export' -> 'Save to file' to replace this skeleton with the real dashboard JSON.",
+  "_comment_why":   "Dashboards-as-code: same dashboard in dev / uat / prod, no manual setup, easy to diff in PRs.",
+  "_todo":          "TICKET-I080: panels = (request rate, p95 latency, error rate). TICKET-I081: pie chart of trades by status.",
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "title": "TODO — request rate (rate(http_server_requests_seconds_count[1m]))",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 4 }
+    },
+    {
+      "title": "TODO — p95 latency (histogram_quantile(0.95, ...))",
+      "type": "stat",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 4 }
+    },
+    {
+      "title": "TODO — error rate by endpoint",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 4, "w": 24, "h": 8 }
+    }
+  ],
+  "schemaVersion": 38,
+  "title": "TradeFlow — API",
+  "version": 1
+}

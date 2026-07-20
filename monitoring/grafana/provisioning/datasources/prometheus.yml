@@ -1,0 +1,19 @@
+# ============================================================================
+# Grafana datasource provisioning — TICKET-I130
+# ============================================================================
+# WHAT:    Auto-registers Prometheus as the default Grafana datasource on boot.
+# WHY:     Students shouldn't have to point Grafana at Prometheus manually
+#          every time docker compose comes up.
+# OBSERVE: After compose up, open http://localhost:3000 and the "Prometheus"
+#          datasource is already there.
+# ============================================================================
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true

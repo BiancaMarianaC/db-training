@@ -1,0 +1,87 @@
+# ============================================================================
+# application.yml — Shared base config across all profiles
+# ============================================================================
+# WHAT:    Common settings; profile-specific overrides live in
+#          application-{dev,uat,prod}.yml.
+# HOW:     Spring Boot loads `application.yml` first, then overlays the
+#          active profile's file on top.
+# WHY:     DRY — repeat only what changes per environment.
+# OBSERVE: On startup, look for the line "The following 1 profile is active: dev"
+#          (or uat/prod) to confirm the right config loaded.
+# ============================================================================
+
+spring:
+  application:
+    name: tradeflow
+  profiles:
+    # TODO(TICKET-I055): default to 'dev'. Override at runtime with
+    # `SPRING_PROFILES_ACTIVE=uat ./mvnw spring-boot:run`.
+    active: dev
+
+  # ----------------------------------------------------------------------
+  # Liquibase — TICKET-I009 (wire) / TICKET-I010 (run) / TICKET-I131 (CI)
+  # ----------------------------------------------------------------------
+  liquibase:
+    enabled: true
+    # Liquibase 4.24+ rejects the `classpath:` prefix here.
+    # File is loaded from backend/src/main/resources/db/changelog/.
+    change-log: db/changelog/db.changelog-master.xml
+
+  # ----------------------------------------------------------------------
+  # JPA — TICKET-I056..I059
+  # ----------------------------------------------------------------------
+  jpa:
+    hibernate:
+      ddl-auto: none           # Liquibase owns the schema, not Hibernate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  # ----------------------------------------------------------------------
+  # Kafka — TICKET-I113 (uncomment after adding the spring-kafka dep)
+  # ----------------------------------------------------------------------
+  # kafka:
+  #   bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  #   consumer:
+  #     group-id: ${KAFKA_CONSUMER_GROUP:recon-group}
+  #     key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  #     value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+  #     properties:
+  #       spring.json.trusted.packages: "com.dbtraining.tradeflow.*"
+  #   producer:
+  #     key-serializer: org.apache.kafka.common.serialization.StringSerializer
+  #     value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+# ============================================================================
+# Actuator — TICKET-I078
+# ============================================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# ============================================================================
+# Springdoc / Swagger — TICKET-I063
+# ============================================================================
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# ============================================================================
+# Custom app settings
+# ============================================================================
+tradeflow:
+  kafka:
+    topics:
+      trades: trade-events
+      dlt: trade-events.DLT

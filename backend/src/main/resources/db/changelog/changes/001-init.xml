@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+============================================================================
+  001-init.xml — Sanity-check changeset (no schema, just a smoke test)
+============================================================================
+  WHAT:    A no-op changeset that just confirms Liquibase can talk to the DB.
+  HOW:     Uses a <tagDatabase> to drop a tag we can reference later.
+  WHY:     If THIS fails, your Liquibase wiring is wrong — fix that before
+           touching real DDL.
+  OBSERVE: After `liquibase update`, the DATABASECHANGELOG row for this
+           changeset has author='tradeflow-team' and id='001-init'.
+============================================================================
+  YOUR JOB on Day 1: design + create the schema yourself by authoring NEW
+  changesets in this directory (002-*.xml onwards). See
+  student-guides/day1/README.md for the tickets.
+============================================================================
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-init" author="tradeflow-team">
+        <tagDatabase tag="v0.0.0-init"/>
+    </changeSet>
+
+</databaseChangeLog>

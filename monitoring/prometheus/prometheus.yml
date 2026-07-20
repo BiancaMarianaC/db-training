@@ -1,0 +1,34 @@
+# ============================================================================
+# prometheus.yml — TICKET-I129
+# ============================================================================
+# WHAT:    Tells Prometheus what to scrape and how often.
+# HOW:     Static targets pointing at the backend's /actuator/prometheus.
+# WHY:     Pull-based monitoring — Prometheus polls each target.
+# OBSERVE: After `docker compose up`, go to http://localhost:9090/targets and
+#          confirm `recon-service` is in state "up".
+# ============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  # ----- Self ----------------------------------------------------------------
+  - job_name: 'prometheus-self'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # ----- Backend (Spring Boot Actuator) --------------------------------------
+  # TODO(TICKET-I129):
+  #  - inside docker-compose the host is 'backend', port 8080
+  #  - outside docker-compose (local dev) use 'host.docker.internal:8080'
+  - job_name: 'recon-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['backend:8080']
+
+  # ----- Kafka -- TICKET-I121 (uncomment when Kafka exposes JMX metrics) ----
+  # - job_name: 'kafka'
+  #   static_configs:
+  #     - targets: ['kafka:9101']

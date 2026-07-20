@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+=============================================================================
+  dashboard.html — TICKET-I086 + TICKET-I091
+=============================================================================
+  WHAT:    Landing page for the trade-ops dashboard.
+  WHY:     Day 7 is intentionally pre-React — vanilla HTML/CSS/JS makes you
+           feel the pain that React solves later.
+  OBSERVE: Open in a browser, click around the nav. No "live" data yet —
+           that arrives via trades.js (TICKET-I093).
+=============================================================================
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TradeFlow — Dashboard</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<header class="topbar">
+    <!-- TODO(TICKET-I086): bank logo (placeholder) + user name on the right. -->
+    <span class="logo">DB · TradeFlow</span>
+    <span class="user">Logged in as <strong>viewer</strong></span>
+</header>
+
+<div class="layout">
+
+    <nav class="sidebar">
+        <!-- TODO(TICKET-I086): nav links. -->
+        <ul>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="trades.html">Trades</a></li>
+            <li><a href="recon.html">Recon Breaks</a></li>
+            <li><a href="add-trade.html">+ New Trade</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>Operations Dashboard</h1>
+
+        <!--
+        =============================================================
+          TODO(TICKET-I091): 4 summary cards
+          - Total Trades        (count from /api/v1/trades)
+          - Matched %           (matched / total)
+          - Unmatched Count     (status IN UNMATCHED|DISPUTED)
+          - Avg Processing Time (from recon results)
+
+          HINT: cards.js can fill these in after fetching /api/v1/trades
+          and /api/v1/recon/results.
+        =============================================================
+        -->
+        <section class="cards">
+            <article class="card">
+                <h2 class="card-caption">Total Trades</h2>
+                <p class="card-value" id="card-total-trades">—</p>
+            </article>
+            <article class="card">
+                <h2 class="card-caption">Matched %</h2>
+                <p class="card-value" id="card-matched-pct">—</p>
+            </article>
+            <article class="card">
+                <h2 class="card-caption">Unmatched Count</h2>
+                <p class="card-value" id="card-unmatched">—</p>
+            </article>
+            <article class="card">
+                <h2 class="card-caption">Avg Processing Time</h2>
+                <p class="card-value" id="card-avg-time">—</p>
+            </article>
+        </section>
+    </main>
+
+</div>
+
+<!-- TODO(TICKET-I091/I098): a small JS file that populates the card numbers. -->
+<!-- <script src="js/cards.js" defer></script> -->
+
+</body>
+</html>

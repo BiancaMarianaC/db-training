@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--
+=============================================================================
+  add-trade.html — TICKET-I089 + TICKET-I095 + TICKET-I096
+=============================================================================
+  WHAT:    Form to submit a new trade to the backend.
+=============================================================================
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>TradeFlow — Add Trade</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<header class="topbar">
+    <span class="logo">DB · TradeFlow</span>
+    <span class="user">Logged in as <strong>trader</strong></span>
+</header>
+
+<div class="layout">
+
+    <nav class="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="trades.html">Trades</a></li>
+            <li><a href="recon.html">Recon Breaks</a></li>
+            <li><a href="add-trade.html" class="active">+ New Trade</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+
+        <h1>New Trade</h1>
+
+        <!--
+        =============================================================
+          TODO(TICKET-I089 + I095 + I096):
+            - all fields required
+            - quantity > 0
+            - price > 0
+            - trade_date <= today
+            - inline error messages BELOW each invalid field
+            - on submit: POST /api/v1/trades, show toast, redirect to trades.html
+        =============================================================
+        -->
+        <form id="trade-form" novalidate>
+
+            <label>Trade Ref
+                <input type="text" name="tradeRef" required pattern="TRD-\d{4}-\d{4}"
+                       placeholder="TRD-2026-0001"/>
+                <span class="field-error" data-for="tradeRef"></span>
+            </label>
+
+            <label>Instrument
+                <select name="instrumentId" required>
+                    <option value="">— select —</option>
+                    <!-- TODO(TICKET-I089/I096): populate from GET /api/v1/instruments -->
+                </select>
+                <span class="field-error" data-for="instrumentId"></span>
+            </label>
+
+            <label>Counterparty
+                <select name="counterpartyId" required>
+                    <option value="">— select —</option>
+                </select>
+                <span class="field-error" data-for="counterpartyId"></span>
+            </label>
+
+            <label>Quantity
+                <input type="number" name="quantity" step="0.0001" min="0.0001" required/>
+                <span class="field-error" data-for="quantity"></span>
+            </label>
+
+            <label>Price
+                <input type="number" name="price" step="0.0001" min="0.0001" required/>
+                <span class="field-error" data-for="price"></span>
+            </label>
+
+            <label>Trade Date
+                <input type="date" name="tradeDate" required/>
+                <span class="field-error" data-for="tradeDate"></span>
+            </label>
+
+            <div class="form-actions">
+                <button type="submit">Submit</button>
+                <a href="trades.html" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        <div id="form-feedback" class="toast hidden"></div>
+
+    </main>
+</div>
+
+<script src="js/addTrade.js" defer></script>
+</body>
+</html>

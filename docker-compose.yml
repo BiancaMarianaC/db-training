@@ -1,0 +1,107 @@
+# ============================================================================
+# docker-compose.yml — TradeFlow full-stack runtime
+# ============================================================================
+# This file is the SKELETON. By Day 10 you will fill in every service so that
+# `docker compose up` brings up the whole platform end-to-end.
+#
+# TODO(TICKET-I127): wire all 7 services below + verify trade flow E2E.
+# TODO(TICKET-I128): set up the docker network so services can resolve each
+#                    other by name (e.g. backend can reach 'postgres', not
+#                    'localhost').
+#
+# WHAT:    7 services: postgres, kafka, zookeeper, backend, frontend,
+#          prometheus, grafana (+ kafdrop as an optional UI for Kafka).
+# HOW:     Use service NAMES as DNS hostnames inside the compose network.
+#          Mount the prometheus.yml from ./monitoring/prometheus/.
+# WHY:     A single command must bring up the whole platform reproducibly
+#          for the Day 10 final demo and for the CI/CD pipeline.
+# OBSERVE: After `docker compose up -d` all 7 containers must reach the
+#          'healthy' or 'running' state. The recon flow must work end-to-end.
+# ============================================================================
+
+version: "3.9"
+
+services:
+  # --------------------------------------------------------------------------
+  # PostgreSQL — primary store for trades, counterparties, recon results
+  # --------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: tradeflow-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tradeflow}
+      POSTGRES_USER: ${POSTGRES_USER:-tradeflow_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tradeflow_user}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --------------------------------------------------------------------------
+  # Kafka + Zookeeper (Day 9)
+  # --------------------------------------------------------------------------
+  # TODO(TICKET-I127): uncomment and wire Kafka + Zookeeper services.
+  # HINT: use confluentinc/cp-kafka:7.5.0 + confluentinc/cp-zookeeper:7.5.0
+  # HINT: KAFKA_ADVERTISED_LISTENERS must list BOTH internal (kafka:29092) and
+  #       host-accessible (localhost:9092) listeners — otherwise the Spring
+  #       Boot app inside Docker won't be able to reach the broker.
+  #
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:7.5.0
+  #   ...
+  # kafka:
+  #   image: confluentinc/cp-kafka:7.5.0
+  #   ...
+  # kafdrop:
+  #   image: obsidiandynamics/kafdrop:latest
+  #   ...
+
+  # --------------------------------------------------------------------------
+  # Backend — Spring Boot recon-service
+  # --------------------------------------------------------------------------
+  # TODO(TICKET-I125 + TICKET-I127): build from ./backend/Dockerfile, depend on
+  # postgres + kafka, expose 8080, point JDBC URL to 'postgres' (NOT localhost).
+  #
+  # backend:
+  #   build: ./backend
+  #   ...
+
+  # --------------------------------------------------------------------------
+  # Frontend — React UI behind nginx
+  # --------------------------------------------------------------------------
+  # TODO(TICKET-I126 + TICKET-I127): build from ./frontend/Dockerfile, expose 80
+  # (mapped to host 5173), depend on backend.
+  #
+  # frontend:
+  #   build: ./frontend
+  #   ...
+
+  # --------------------------------------------------------------------------
+  # Prometheus — scrapes /actuator/prometheus from backend
+  # --------------------------------------------------------------------------
+  # TODO(TICKET-I129): mount monitoring/prometheus/prometheus.yml read-only.
+  # HINT: The scrape target inside the compose network is 'backend:8080',
+  #       NOT 'localhost:8080'.
+  #
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   ...
+
+  # --------------------------------------------------------------------------
+  # Grafana — dashboards for API + Kafka metrics
+  # --------------------------------------------------------------------------
+  # TODO(TICKET-I130): pre-provision the Prometheus datasource and the
+  # default dashboard JSON via monitoring/grafana/provisioning/.
+  #
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   ...
+
+volumes:
+  postgres-data:
+  # TODO(TICKET-I127): add 'kafka-data', 'grafana-data' as you add services.

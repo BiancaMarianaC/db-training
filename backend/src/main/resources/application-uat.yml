@@ -1,0 +1,22 @@
+# ============================================================================
+# application-uat.yml — User-acceptance / staging profile (TICKET-I055)
+# ============================================================================
+# WHAT:    Real PostgreSQL, verbose logging.
+# WHY:     Lets the QA team run against production-shaped data without
+#          touching prod.
+# OBSERVE: Boot log shows "HikariPool-1 - Added connection".
+# ============================================================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:tradeflow}
+    username: ${POSTGRES_USER:tradeflow_user}
+    password: ${POSTGRES_PASSWORD:changeme}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+
+logging:
+  level:
+    com.dbtraining.tradeflow: INFO
+    org.hibernate.SQL: WARN

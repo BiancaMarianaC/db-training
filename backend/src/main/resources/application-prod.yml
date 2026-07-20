@@ -1,0 +1,28 @@
+# ============================================================================
+# application-prod.yml — Production profile (TICKET-I055)
+# ============================================================================
+# WHAT:    PostgreSQL + tight log levels + env-only secrets.
+# WHY:     Never log SQL or stack traces with PII in prod.
+# OBSERVE: No DEBUG lines in stdout once running.
+# ============================================================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      connection-timeout: 3000
+
+logging:
+  level:
+    root: WARN
+    com.dbtraining.tradeflow: INFO
+
+# Actuator: health-only on the public port; everything else internal-only.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus

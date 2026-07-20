@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+=============================================================================
+  trades.html — TICKET-I087 + TICKET-I093 + TICKET-I094
+=============================================================================
+  WHAT:    Sortable, paginated table of trades.
+  WHY:     Most common Ops-team view: scan trades, filter by status.
+=============================================================================
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>TradeFlow — Trades</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<header class="topbar">
+    <span class="logo">DB · TradeFlow</span>
+    <span class="user">Logged in as <strong>viewer</strong></span>
+</header>
+
+<div class="layout">
+
+    <nav class="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="trades.html" class="active">Trades</a></li>
+            <li><a href="recon.html">Recon Breaks</a></li>
+            <li><a href="add-trade.html">+ New Trade</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+
+        <h1>Trades</h1>
+
+        <!--
+        =============================================================
+          TODO(TICKET-I094): sortable column headers
+          On click, toggle ascending/descending.
+          Add a ▲ / ▼ marker for the active sort.
+        =============================================================
+        -->
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th data-key="tradeRef">Trade Ref</th>
+                <th data-key="instrumentId">Instrument</th>
+                <th data-key="counterpartyId">Counterparty</th>
+                <th data-key="quantity">Qty</th>
+                <th data-key="price">Price</th>
+                <th data-key="tradeDate">Date</th>
+                <th data-key="status">Status</th>
+            </tr>
+            </thead>
+            <tbody id="trades-tbody">
+            <!-- TODO(TICKET-I093): rows populated by trades.js -->
+            </tbody>
+        </table>
+
+        <!-- TODO(TICKET-I098): loading spinner + error <div>. -->
+        <div id="trades-loading" class="loading hidden">Loading trades…</div>
+        <div id="trades-error" class="error hidden"></div>
+
+        <!-- TODO(TICKET-I094): pagination controls. -->
+
+    </main>
+</div>
+
+<script src="js/trades.js" defer></script>
+</body>
+</html>

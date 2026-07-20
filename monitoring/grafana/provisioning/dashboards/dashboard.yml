@@ -1,0 +1,19 @@
+# ============================================================================
+# Grafana dashboard provider — TICKET-I130
+# ============================================================================
+# WHAT:    Tells Grafana to auto-load every *.json in this folder as a
+#          dashboard.
+# WHY:     Dashboards-as-code — your TICKET-I080 api.json + TICKET-I121
+#          kafka.json are checked into git, not manually clicked in the UI.
+# ============================================================================
+
+apiVersion: 1
+
+providers:
+  - name: TradeFlow dashboards
+    type: file
+    folder: TradeFlow
+    options:
+      # TODO(TICKET-I080 + I121): drop your exported dashboard JSON files
+      # into the same directory as this YAML (or update `path`).
+      path: /etc/grafana/provisioning/dashboards

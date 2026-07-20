@@ -1,0 +1,225 @@
+/* ============================================================================
+   style.css — TICKET-I090 + I091 + I092
+============================================================================
+   WHAT:    Brand styling for the Day-7 static dashboard.
+   HOW:     Deutsche Bank navy + gold + sans-serif. Responsive at < 600px.
+   WHY:     Looks production-y so the demo feels real.
+   OBSERVE: Resize the window — the cards stack vertically on small screens.
+============================================================================ */
+
+:root {
+    --db-navy: #003366;
+    --db-gold: #FFC72C;
+    --db-bg: #f4f6f9;
+    --db-card: #ffffff;
+    --db-text: #1a1f2c;
+    --db-text-light: #5b6473;
+    --status-matched: #2e7d32;
+    --status-unmatched: #c62828;
+    --status-disputed: #ef6c00;
+    --status-pending: #757575;
+}
+
+/* ---------- Layout reset ---------- */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--db-bg);
+    color: var(--db-text);
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+    background: var(--db-navy);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.topbar .logo {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.topbar .user {
+    font-size: 0.875rem;
+    opacity: 0.85;
+}
+
+/* ---------- Sidebar layout ---------- */
+.layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 56px);
+}
+.sidebar {
+    background: #001a33;
+    color: #cfd6df;
+    padding-top: 1rem;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.sidebar li a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    border-left: 3px solid transparent;
+}
+.sidebar li a:hover,
+.sidebar li a.active {
+    background: rgba(255, 199, 44, 0.06);
+    border-left-color: var(--db-gold);
+    color: white;
+}
+
+.content {
+    padding: 1.5rem 2rem;
+}
+.content h1 {
+    margin-top: 0;
+    color: var(--db-navy);
+}
+
+/* ---------- Summary cards (TICKET-I091) ---------- */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.card {
+    background: var(--db-card);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.card-caption {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--db-text-light);
+    margin: 0 0 0.5rem 0;
+}
+.card-value {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--db-navy);
+}
+
+/* ---------- Data table ---------- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--db-card);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.data-table th,
+.data-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+.data-table th {
+    background: var(--db-navy);
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 500;
+}
+.data-table tbody tr:nth-child(even) {
+    background: rgba(0, 51, 102, 0.03);
+}
+.data-table tbody tr:hover {
+    background: rgba(0, 51, 102, 0.08);
+}
+
+/* ---------- Status badges (TICKET-I092) ---------- */
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 999px;
+    color: white;
+}
+.badge-matched   { background: var(--status-matched); }
+.badge-unmatched { background: var(--status-unmatched); }
+.badge-disputed  { background: var(--status-disputed); }
+.badge-pending   { background: var(--status-pending); }
+.badge-resolved  { background: var(--status-matched); }
+.badge-open      { background: var(--status-unmatched); }
+
+/* ---------- Forms ---------- */
+form {
+    display: grid;
+    gap: 1rem;
+    max-width: 500px;
+    margin-top: 1.5rem;
+}
+form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--db-text-light);
+}
+form input, form select {
+    padding: 0.5rem;
+    font: inherit;
+    border: 1px solid #ccd2da;
+    border-radius: 4px;
+    background: white;
+}
+form input:invalid:not(:placeholder-shown) {
+    border-color: var(--status-unmatched);
+}
+.field-error {
+    color: var(--status-unmatched);
+    font-size: 0.75rem;
+}
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+button, .btn-secondary {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
+button {
+    background: var(--db-navy);
+    color: white;
+}
+.btn-secondary {
+    background: transparent;
+    color: var(--db-navy);
+    border: 1px solid var(--db-navy);
+}
+
+/* ---------- Loading / Error / Toast ---------- */
+.hidden { display: none; }
+.loading { padding: 1rem; color: var(--db-text-light); font-style: italic; }
+.error { padding: 1rem; color: var(--status-unmatched); }
+.toast {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: #ecf3fb;
+    border-left: 4px solid var(--db-navy);
+}
+
+/* ---------- Responsive (TICKET-I091) ---------- */
+@media (max-width: 600px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .cards { grid-template-columns: 1fr; }
+}

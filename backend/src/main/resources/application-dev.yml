@@ -1,0 +1,32 @@
+# ============================================================================
+# application-dev.yml — Local development profile (TICKET-I055)
+# ============================================================================
+# WHAT:    Settings for `SPRING_PROFILES_ACTIVE=dev`.
+# HOW:     Use H2 in-memory DB for fast iteration. Liquibase still runs.
+# WHY:     Lets students run the app without a local PostgreSQL on Day 5.
+# OBSERVE: Boot log says "H2 console available at /h2-console".
+# ============================================================================
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:tradeflow;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  sql:
+    init:
+      mode: embedded
+      # TICKET-I066: data.sql seeds dev with sample rows.
+      # Spring Boot runs data.sql AFTER Liquibase by default — no need to
+      # 'defer-datasource-initialization', and enabling it creates a circular
+      # bean dependency (liquibase ↔ entityManagerFactory) in Boot 3.x.
+
+logging:
+  level:
+    com.dbtraining.tradeflow: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+============================================================================
+  Liquibase master changelog — TradeFlow
+============================================================================
+  TICKET-I009 (Day 2 Sprint 3) — wire every Day-1 changeset (I003..I015)
+  into this file in dependency order. Day-1 students AUTHOR the XML
+  files; today you list them here.
+
+  TICKET-I010 (Day 2 Sprint 3) — `./mvnw spring-boot:run` boots Spring +
+  Liquibase reads this file + applies every change in order. Verify in
+  /h2-console: every changeset shows EXECUTED in DATABASECHANGELOG.
+
+  Order matters — Liquibase applies includes top-to-bottom; parents
+  before children (instruments + counterparties before trades);
+  FKs/indexes after both tables exist.
+============================================================================
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Day-1 bootstrap: all 5 tables + indexes -->
+    <include file="db/changelog/changes/001-init.xml"/>
+
+    <!--
+        As you complete Day-1 tickets I003..I008 (REVIEW + EXTEND the
+        bootstrap), add new changeset files here. Naming convention:
+
+            002-<your-change>.xml   author=<your-handle>
+
+        Example additions you might write:
+          - Add CHECK constraints on trades.status and trades.quantity > 0
+          - Add CHECK constraint on counterparties.region
+          - Add an audit_log immutability trigger
+          - Add a generated column trades.notional_amount
+    -->
+
+</databaseChangeLog>

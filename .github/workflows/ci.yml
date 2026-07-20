@@ -1,0 +1,141 @@
+# ============================================================================
+# .github/workflows/ci.yml — TICKET-I133 + I134 + I135
+# ============================================================================
+# WHAT:    GitHub Actions CI pipeline.
+# HOW:     3 jobs in parallel: lint, backend-build-test, frontend-build-test.
+#          docker-build runs only on push to develop/main.
+# WHY:     Every push gets verified — broken code never reaches develop.
+# OBSERVE: After pushing your branch, watch the green checkmarks appear on
+#          your PR. A red ✗ on any job blocks the merge.
+# ============================================================================
+name: TradeFlow CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+
+  # =========================================================================
+  # JOB 1 — Lint (cheap, runs first)
+  # =========================================================================
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO(TICKET-I133): add a `markdownlint` or `eslint` step here if your
+      # team wants style checks in CI. Keep it OFF the critical path.
+      - name: Print branch info
+        run: |
+          echo "Building $GITHUB_REF on $GITHUB_SHA"
+          echo "Triggered by $GITHUB_EVENT_NAME"
+
+  # =========================================================================
+  # JOB 2 — Backend build + test + Liquibase validate
+  # =========================================================================
+  backend-build-test:
+    runs-on: ubuntu-latest
+
+    # TODO(TICKET-I134): spin up Postgres as a service so integration tests
+    # can hit a real DB and Liquibase can validate against it.
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: tradeflow_test
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U ci"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build + run unit tests
+        working-directory: backend
+        run: ./mvnw -B -e clean verify
+
+      # TICKET-I134: Liquibase validate step.
+      - name: Liquibase validate
+        working-directory: backend
+        run: >
+          ./mvnw -B liquibase:validate
+          -Dliquibase.url=jdbc:postgresql://localhost:5432/tradeflow_test
+          -Dliquibase.username=ci
+          -Dliquibase.password=ci
+          -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.xml
+
+      # TICKET-I135: surface JaCoCo report as a build artifact.
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: backend/target/site/jacoco/
+
+  # =========================================================================
+  # JOB 3 — Frontend build + test
+  # =========================================================================
+  frontend-build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install deps
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run unit tests
+        working-directory: frontend
+        run: npm test -- --run
+
+  # =========================================================================
+  # JOB 4 — Docker build (only on develop / main pushes)
+  # =========================================================================
+  docker-build:
+    needs: [backend-build-test, frontend-build-test]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # TODO(TICKET-I133): if you have credentials, log in + push to GHCR.
+      # docker/login-action@v3 + docker/build-push-action@v5.
+
+      - name: Build backend image
+        run: docker build -t tradeflow/backend:${{ github.sha }} backend
+
+      - name: Build frontend image
+        run: docker build -t tradeflow/frontend:${{ github.sha }} frontend
+
+      # TODO(TICKET-I133): verify monitoring health after compose up
+      # (would need docker-compose action + a curl loop).

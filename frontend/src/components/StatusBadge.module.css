@@ -1,0 +1,14 @@
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 999px;
+    color: white;
+}
+
+.matched   { background: #2e7d32; }
+.unmatched { background: #c62828; }
+.disputed  { background: #ef6c00; }
+.pending   { background: #757575; }
+.cancelled { background: #455a64; }

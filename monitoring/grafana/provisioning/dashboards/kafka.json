@@ -1,0 +1,21 @@
+{
+  "_comment_what":  "TICKET-I121 — Kafka dashboard",
+  "_todo":          "Panels: consumer lag by group, messages produced per minute, DLT alert.",
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "title": "TODO — Kafka consumer lag by group",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 }
+    },
+    {
+      "title": "TODO — Messages produced per minute",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 6 }
+    }
+  ],
+  "schemaVersion": 38,
+  "title": "TradeFlow — Kafka",
+  "version": 1
+}

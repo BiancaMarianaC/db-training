@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+=============================================================================
+  recon.html — TICKET-I088 + TICKET-I097
+=============================================================================
+  WHAT:    Lists reconciliation breaks (status=OPEN) with a Resolve button.
+=============================================================================
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>TradeFlow — Recon</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<header class="topbar">
+    <span class="logo">DB · TradeFlow</span>
+    <span class="user">Logged in as <strong>trader</strong></span>
+</header>
+
+<div class="layout">
+
+    <nav class="sidebar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="trades.html">Trades</a></li>
+            <li><a href="recon.html" class="active">Recon Breaks</a></li>
+            <li><a href="add-trade.html">+ New Trade</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+
+        <h1>Reconciliation Breaks</h1>
+
+        <!-- TODO(TICKET-I088): filter pills (All | OPEN | RESOLVED). -->
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Trade Ref</th>
+                <th>Discrepancy</th>
+                <th>Status</th>
+                <th>Opened</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="recon-tbody">
+            <!-- TODO(TICKET-I097): rows populated by recon.js. -->
+            </tbody>
+        </table>
+
+        <div id="recon-loading" class="loading hidden">Loading breaks…</div>
+        <div id="recon-error" class="error hidden"></div>
+
+    </main>
+</div>
+
+<script src="js/recon.js" defer></script>
+</body>
+</html>
