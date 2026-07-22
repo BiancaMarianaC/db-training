@@ -21,6 +21,7 @@
 --   trade_date | trade_count | total_notional
 -- Order by trade_date DESC.
 -- HINT: SUM(quantity * price) as total_notional.
+-- select trade_date, trade_count,  SUM(quantity * price) as total_notional from tableName
 
 
 -- ---------------------------------------------------------------------------
